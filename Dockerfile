@@ -8,8 +8,6 @@ RUN apt-get update \
 WORKDIR /app
 COPY . .
 
-RUN make_docker_build_fail 
-
 RUN make clean
 RUN make test
 RUN make release
