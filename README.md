@@ -65,4 +65,40 @@ make test
 
 ## CI/CD
 
-TO BE COMPLETED 
+This repository uses GitHub Actions with two workflows:
+
+- CI (`.github/workflows/ci.yml`) runs on push and pull request events targeting `main`.
+  - Steps: `make`, `make test`, then `docker build` and a container smoke test.
+- CD (`.github/workflows/release.yml`) runs only when a GitHub release is created.
+  - The CD job depends on a CI job in the same workflow, so it will not run if CI fails.
+
+Artifacts and versioning:
+
+- Release binary: `dummydb-<tag>` where `<tag>` is the GitHub release tag.
+- License: `LICENSE`.
+- Docker image: `ghcr.io/<owner>/<repo>:<tag>` (lowercase image name).
+
+Reproducible builds with Docker:
+
+```sh
+docker build -t dummydb .
+docker run --rm dummydb
+```
+
+Docker build failure note:
+
+- Initial Docker builds failed because the build used host `build/` artifacts copied into the
+  image, so the container tried to execute a non-Linux test binary. Adding a `make clean`
+  step and ignoring `build/` in `.dockerignore` fixed the failure.
+
+Pulling the image locally:
+
+```sh
+docker login ghcr.io
+docker pull ghcr.io/<owner>/<repo>:<tag>
+```
+
+Architecture note:
+
+- GitHub-hosted runners build `linux/amd64` images by default. On `arm64` hosts, pull with
+  `--platform=linux/amd64` or build a multi-arch image using `docker buildx`.
