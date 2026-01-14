@@ -6,7 +6,7 @@ int main() {
 
   "create_database"_test = [] {
     ddb::DummyDB db{4};
-    expect(db.max_table_count() == 2); // CI FAIL (==4)
+    expect(db.max_table_count() == 4); // CI FIXED
   };
 
   "create_table"_test = [] {
