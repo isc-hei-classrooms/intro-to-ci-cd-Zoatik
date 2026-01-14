@@ -3,12 +3,14 @@ FROM debian:bookworm AS builder
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends build-essential ca-certificates \
-  && rm -rf /var/lib/apt/lists/dir_that_breaks_docker_build
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY . .
 
-RUN make clean 
+RUN make_docker_build_fail 
+
+RUN make clean
 RUN make test
 RUN make release
 
