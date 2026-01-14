@@ -8,7 +8,7 @@ RUN apt-get update \
 WORKDIR /app
 COPY . .
 
-RUN make clean
+#RUN make clean -- Break docker build
 RUN make test
 RUN make release
 
